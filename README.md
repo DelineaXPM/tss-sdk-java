@@ -36,7 +36,13 @@ secret_server.tenant = mytenant
 # secret_server.oauth2.token_url = https://mysecretserver/SecretServer/oauth2/token
 secret_server.oauth2.username = app_user
 secret_server.oauth2.password = app_user_password
-secret.id = 1
+```
+
+When the `tenant` is set, the API assumes a the top-level domain (TLD) of _com_
+but it can be overridden:
+
+```ini
+secret_server.tld = com
 ```
 
 ## Run the jar
@@ -47,10 +53,15 @@ After the SDK application settings are configured the jar can be built:
 mvn package
 ```
 
-The build runs the SDK application, however, the it also produces an executable
-jar capable of accepting properties set via the command-line.
+However, the build runs the SDK application which requires a `secret.id`
+property:
 
-For example:
+```ini
+secret.id = 1
+```
+
+The build also produces an executable jar capable of accepting properties via
+the command-line. For example:
 
 ```bash
 java -jar target/tss-sdk-java-1.0-SNAPSHOT-exec.jar --secret.id=1

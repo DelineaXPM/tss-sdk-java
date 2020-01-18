@@ -43,8 +43,8 @@ import org.springframework.web.util.UriBuilderFactory;
  */
 @Component
 public class SecretServerFactoryBean implements FactoryBean<SecretServer>, InitializingBean {
-    public static final String DEFAULT_API_URL_TEMPLATE = "https://%s.secretservercloud.com/api/v1",
-            DEFAULT_OAUTH2_TOKEN_URL_TEMPLATE = "https://%s.secretservercloud.com/oauth2/token";
+    public static final String DEFAULT_API_URL_TEMPLATE = "https://%s.secretservercloud.%s/api/v1",
+            DEFAULT_OAUTH2_TOKEN_URL_TEMPLATE = "https://%s.secretservercloud.%s/oauth2/token", DEFAULT_TLD = "com";
 
     static class AccessGrant {
         private String accessToken, refreshToken, tokenType;
@@ -104,6 +104,9 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
     @Value("${secret_server.tenant:#{null}}")
     private String tenant;
 
+    @Value("${secret_server.tld:" + DEFAULT_TLD + "}")
+    private String tld;
+
     @Autowired(required = false)
     private ClientHttpRequestFactory requestFactory;
 
@@ -115,8 +118,10 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
                 || StringUtils.hasText(apiRootUrl) && StringUtils.hasText(tokenUrl) || StringUtils.hasText(tenant),
                 "Either secret_server.tenant or both of either secret_server.api_root_url and secret_server.oauth2.token_url or secret_server.api_root_url_template and secret_server.oauth2.token_url_template must be set.");
 
-        uriBuilderFactory = new DefaultUriBuilderFactory(
-                fromUriString(StringUtils.hasText(tenant) ? String.format(apiRootUrlTemplate, tenant) : apiRootUrl));
+        tld = tld.replaceAll("^\\.*(.*?)\\.*$", "$1");
+        uriBuilderFactory = new DefaultUriBuilderFactory(fromUriString(
+                StringUtils.hasText(tenant) ? String.format(apiRootUrlTemplate.replaceAll("/*$", ""), tenant, tld)
+                        : apiRootUrl.replaceAll("/*$", "")));
         if (requestFactory == null)
             requestFactory = new SimpleClientHttpRequestFactory();
     }
@@ -128,8 +133,9 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
         request.add(GRANT_REQUEST_PASSWORD_PROPERTY, password);
         request.add(GRANT_REQUEST_GRANT_TYPE_PROPERTY, GRANT_REQUEST_GRANT_TYPE);
         return new RestTemplate().postForObject(
-                StringUtils.hasText(tenant) ? String.format(tokenUrlTemplate, tenant) : tokenUrl, request,
-                AccessGrant.class);
+                StringUtils.hasText(tenant) ? String.format(tokenUrlTemplate.replaceAll("/*$", ""), tenant, tld)
+                        : tokenUrl.replaceAll("/*$", ""),
+                request, AccessGrant.class);
     }
 
     @Override
