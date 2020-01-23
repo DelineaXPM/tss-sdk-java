@@ -21,7 +21,7 @@ public class SecretServer extends RestTemplate {
 	 *
 	 * @param id - the integer ID of the secret to be fetched
 	 * @param fetchFileAttachments - whether to fetch {@code fileAttachments} so
-	 *        {@link Secret.Item#getValue()} returns the contents instead of the default placeholder
+	 *        {@link Secret.Field#getValue()} returns the contents instead of the default placeholder
 	 * @return the {@link Secret} object
 	 */
 	public Secret getSecret(final int id, final boolean fetchFileAttachments) {
@@ -44,8 +44,10 @@ public class SecretServer extends RestTemplate {
 
 	/**
 	 * Fetch and return a {@link Secret} from Thycotic Secret Server, including {@code fileAttachments}
-	 *
 	 * @see #getSecret(int, boolean)
+	 *
+	 * @param id - the integer ID of the secret to be fetched
+	 * @return the {@link Secret} object
 	 */
 	public Secret getSecret(final int id) {
 		return getSecret(id, true);
