@@ -1,5 +1,7 @@
 # The Thycotic Secret Server Java SDK
 
+![Deploy](https://github.com/thycotic/tss-sdk-java/workflows/Deploy/badge.svg)
+
 The [Thycotic](https://thycotic.com/) Secret Server Java SDK contains classes that
 interact with [Secret Server](https://thycotic.com/products/secret-server/) via the REST API.
 
