@@ -10,7 +10,19 @@ The SDK contains an API based the [Spring Framework](https://spring.io/projects/
 and a simple application based on [Spring Boot](https://spring.io/projects/spring-boot),
 that calls the API.
 
-## Build
+## Install into your application
+
+You can use this SDk in your application by adding the following dependency:
+
+```xml
+<dependency>
+  <groupId>com.thycotic.secrets</groupId>
+  <artifactId>tss-sdk-java</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+## Build locally
 
 ### Prerequisites
 
