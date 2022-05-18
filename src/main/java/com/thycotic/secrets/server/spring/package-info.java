@@ -1,5 +1,5 @@
 /**
- * A Thycotic Secret Server API based on
+ * A Delinea Secret Server API based on
  * <a href="https://spring.io/">Spring.</a>
  *
  * <p>{@link SecretServer} extends

@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * A <a href="https://spring.io/projects/spring-framework">Spring Framework</a>
  * <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html">RestTemplate</a>
- * with convenience methods specific to the Thycotic Secret Server REST API.
+ * with convenience methods specific to the Delinea Secret Server REST API.
  *
  * <p>Use the {@link SecretServerFactoryBean} to create and initialize it.
  */
@@ -17,7 +17,7 @@ public class SecretServer extends RestTemplate {
 	private static final String SECRET_FILE_ATTACHMENT_URI = SECRET_ID_URI + "/fields/{slug}";
 
 	/**
-	 * Fetch and return a {@link Secret} from Thycotic Secret Server.
+	 * Fetch and return a {@link Secret} from Delinea Secret Server.
 	 *
 	 * @param id - the integer ID of the secret to be fetched
 	 * @param fetchFileAttachments - whether to fetch {@code fileAttachments} so
@@ -43,7 +43,7 @@ public class SecretServer extends RestTemplate {
 	}
 
 	/**
-	 * Fetch and return a {@link Secret} from Thycotic Secret Server, including {@code fileAttachments}
+	 * Fetch and return a {@link Secret} from Delinea Secret Server, including {@code fileAttachments}
 	 * @see #getSecret(int, boolean)
 	 *
 	 * @param id - the integer ID of the secret to be fetched

@@ -1,9 +1,9 @@
-# The Thycotic Secret Server Java SDK
+# The Delinea Secret Server Java SDK
 
 ![Deploy](https://github.com/thycotic/tss-sdk-java/workflows/Deploy/badge.svg)
 
-The [Thycotic](https://thycotic.com/) Secret Server Java SDK contains classes that
-interact with [Secret Server](https://thycotic.com/products/secret-server/) via the REST API.
+The [Delinea](https://delinea.com/) Secret Server Java SDK contains classes that
+interact with [Secret Server](https://delinea.com/products/secret-server/) via the REST API.
 
 The SDK contains an API based the [Spring Framework](https://spring.io/projects/spring-framework)
 [RestTemplate](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html),

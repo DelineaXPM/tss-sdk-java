@@ -14,7 +14,7 @@
 	<artifactId>tss-sdk-java</artifactId>
 	<version>1.0</version>
 	<name>tss-sdk-java</name>
-	<description>The Thycotic Secret Server Java SDK</description>
+	<description>The Delinea Secret Server Java SDK</description>
 
 	<developers>
 		<developer>
