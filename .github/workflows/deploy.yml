@@ -1,10 +1,6 @@
 name: Deploy
 on:
   push:
-    # Publish `master`
-    branches:
-      - master
-
     # Publish `v1.2.3` tags as releases.
     tags:
       - v*
@@ -21,11 +17,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase
 
       - name: Customize the Maven settings.xml
         uses: whelk-io/maven-settings-xml-action@v4
         with:
-          servers: '[{ "id": "sonatype-nexus-snapshots", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }, { "id": "sonatype-nexus-staging", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }]'
+          servers: '[{ "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }, { "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }]'
 
       - name: Configure the application
         run: |
@@ -34,8 +32,8 @@ jobs:
           echo "secret_server.tenant = ${{ secrets.TSS_TENANT }}" >> "${properties}"
           echo "secret_server.oauth2.username = ${{ secrets.TSS_USERNAME }}" >> "${properties}"
           echo "secret_server.oauth2.password = ${{ secrets.TSS_PASSWORD }}" >> "${properties}"
-          echo "secret.id = 1" >> "${properties}"
+          echo "secret.id = ${{ secrets.TSS_SECRET_ID }}" >> "${properties}"
 
       - name: Deploy with Maven
         run: |
-          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/thycotic -Dtoken=GH_TOKEN
+          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/thycotic -Dtoken=GH_TOKEN -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
