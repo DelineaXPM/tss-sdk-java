@@ -1,4 +1,4 @@
-package com.thycotic.secrets.spring;
+package com.delinea.secrets.spring;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +11,7 @@ import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 @SpringBootTest
 class ApplicationTests {
     @Configuration
-    @ComponentScan("com.thycotic.secrets")
+    @ComponentScan("com.delinea.secrets")
     public static class Config {
         @Bean
         public ClientHttpRequestFactory clientRequestFactory() {
