@@ -36,4 +36,4 @@ jobs:
 
       - name: Deploy with Maven
         run: |
-          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/thycotic -Dtoken=GH_TOKEN -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/delineaXPM -Dtoken=GH_TOKEN -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}

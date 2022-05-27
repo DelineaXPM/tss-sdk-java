@@ -10,7 +10,7 @@
 		<!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.thycotic.secrets</groupId>
+	<groupId>com.delinea.secrets</groupId>
 	<artifactId>tss-sdk-java</artifactId>
 	<version>1.0.1</version>
 	<name>tss-sdk-java</name>
@@ -43,8 +43,8 @@
 	</licenses>
 
 	<scm>
-		<connection>https://github.com/thycotic/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/thycotic/${project.artifactId}.git</developerConnection>
+		<connection>https://github.com/DelineaXPM/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/DelineaXPM/${project.artifactId}.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
