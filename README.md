@@ -49,7 +49,7 @@ secret_server.tenant = mytenant
 # secret_server.api_root_url = https://mysecretserver/SecretServer/api/v1
 # secret_server.oauth2.token_url = https://mysecretserver/SecretServer/oauth2/token
 secret_server.oauth2.username = app_user
-secret_server.oauth2.password = app_user_password
+secret_server.oauth2.password = Thagrosh
 ```
 
 When the `tenant` is set, the API assumes a the top-level domain (TLD) of _com_
