@@ -52,7 +52,7 @@
 		<java.version>8</java.version>
 		<jackson.version>2.13.3</jackson.version>
 		<spring.version>5.3.7</spring.version>
-		<pmd.version>6.34.0</pmd.version>
+		<pmd.version>6.49.0</pmd.version>
 	</properties>
 
 	<dependencies>
@@ -94,13 +94,13 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.30</version>
+			<version>1.7.36</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>3.14.9</version>
+			<version>4.0.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -122,7 +122,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 					<id>attach-sources</id>
@@ -135,7 +135,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 					<id>attach-javadocs</id>
@@ -148,7 +148,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>
@@ -212,7 +212,7 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>3.1.12.2</version>
+				<version>4.0.0</version>
 				<dependencies>
 					<!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
 					<dependency>
