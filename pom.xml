@@ -51,7 +51,7 @@
 	<properties>
 		<java.version>8</java.version>
 		<jackson.version>2.13.4</jackson.version>
-		<spring.version>5.3.20</spring.version>
+		<spring.version>5.3.23</spring.version>
 		<pmd.version>6.49.0</pmd.version>
 	</properties>
 
@@ -212,7 +212,7 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.0.0</version>
+				<version>4.7.2.0</version>
 				<dependencies>
 					<!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
 					<dependency>
