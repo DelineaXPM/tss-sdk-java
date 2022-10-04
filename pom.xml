@@ -52,7 +52,7 @@
 		<java.version>8</java.version>
 		<jackson.version>2.13.4</jackson.version>
 		<spring.version>5.3.23</spring.version>
-		<pmd.version>6.49.0</pmd.version>
+		<pmd.version>6.50.0</pmd.version>
 	</properties>
 
 	<dependencies>
