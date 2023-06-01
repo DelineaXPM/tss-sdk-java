@@ -18,7 +18,7 @@ You can use this SDk in your application by adding the following dependency:
 <dependency>
   <groupId>com.delinea.secrets</groupId>
   <artifactId>tss-sdk-java</artifactId>
-  <version>1.0</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
