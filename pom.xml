@@ -52,7 +52,7 @@
 		<java.version>8</java.version>
  snyk-upgrade-3669fc6d22fb2035567a6961edc9bb96
 		<jackson.version>2.16.0</jackson.version>
-		<spring.version>6.1.1</spring.version>
+		<spring.version>6.1.2</spring.version>
  main
 		<pmd.version>6.55.0</pmd.version>
 	</properties>
