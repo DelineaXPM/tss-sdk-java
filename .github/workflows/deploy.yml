@@ -35,6 +35,7 @@ jobs:
           echo "secret_server.tenant = ${{ secrets.TSS_TENANT }}" >> "${properties}"
           echo "secret_server.oauth2.username = ${{ secrets.TSS_USERNAME }}" >> "${properties}"
           echo "secret_server.oauth2.password = ${{ secrets.TSS_PASSWORD }}" >> "${properties}"
+          echo "secret.id = ${{ secrets.TSS_SECRET_ID }}" >> "${properties}"
 
       - name: Deploy with Maven
         run: |
