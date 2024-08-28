@@ -5,7 +5,7 @@ on:
     tags:
       - v*
     branches:
-      - test
+      - delinea-rajani-patch-1
   
 jobs:
   push:
