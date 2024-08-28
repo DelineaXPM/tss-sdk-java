@@ -38,4 +38,4 @@ jobs:
 
       - name: Deploy with Maven
         run: |
-          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/delineaXPM -Dtoken=${{ secrets.GITHUB_TOKEN }} -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
+          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/delineaXPM -Dtoken=${{ secrets.GH_TOKEN }} -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
