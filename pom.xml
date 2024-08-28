@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -50,10 +50,8 @@
 
 	<properties>
 		<java.version>8</java.version>
- snyk-upgrade-3669fc6d22fb2035567a6961edc9bb96
 		<jackson.version>2.17.2</jackson.version>
 		<spring.version>6.1.12</spring.version>
- main
 		<pmd.version>6.55.0</pmd.version>
 	</properties>
 
