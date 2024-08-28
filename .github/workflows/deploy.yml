@@ -35,8 +35,10 @@ jobs:
           echo "secret_server.tenant = ${{ secrets.TSS_TENANT }}" >> "${properties}"
           echo "secret_server.oauth2.username = ${{ secrets.TSS_USERNAME }}" >> "${properties}"
           echo "secret_server.oauth2.password = ${{ secrets.TSS_PASSWORD }}" >> "${properties}"
-          echo "secret.id = ${{ secrets.TSS_SECRET_ID }}" >> "${properties}"
+          echo "GH_token = ${{ secrets.GH_TOKEN }}" >> "${properties}"
+          echo "GITHUB_token = ${{ secrets.GITHUB_TOKEN}}" >> "${properties}"
+          echo "GPG_PASSPHRASE = ${{ secrets.GPG_PASSPHRASE }}" >> "${properties}"
 
       - name: Deploy with Maven
         run: |
-          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/delineaXPM -Dtoken=${{ secrets.GH_TOKEN }} -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/delineaXPM -Dtoken=${{ secrets.GH_TOKEN }} -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
