@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.3</version>
-		<relativePath/>
+		<relativePath />
 		<!-- lookup parent from repository -->
 	</parent>
 
@@ -44,7 +46,8 @@
 
 	<scm>
 		<connection>https://github.com/DelineaXPM/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/DelineaXPM/${project.artifactId}.git</developerConnection>
+		<developerConnection>
+			scm:git:ssh://git@github.com/DelineaXPM/${project.artifactId}.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -90,13 +93,13 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
- 
-       <dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-simple</artifactId>
-		    <version>2.0.16</version>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>2.0.16</version>
 		</dependency>
-           
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -110,11 +113,11 @@
 			<scope>test</scope>
 		</dependency>
 
-         <dependency>
-	        <groupId>org.yaml</groupId>
-	        <artifactId>snakeyaml</artifactId>
-	        <version>2.2</version>
-	    </dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>2.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -136,10 +139,10 @@
 				<version>3.3.1</version>
 				<executions>
 					<execution>
-					<id>attach-sources</id>
-					<goals>
-						<goal>jar-no-fork</goal>
-					</goals>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -149,10 +152,10 @@
 				<version>3.8.0</version>
 				<executions>
 					<execution>
-					<id>attach-javadocs</id>
-					<goals>
-						<goal>jar</goal>
-					</goals>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -175,7 +178,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>		
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -210,7 +213,7 @@
 						<groupId>net.sourceforge.pmd</groupId>
 						<artifactId>pmd-java</artifactId>
 						<version>6.55.0</version>
-					</dependency
+					</dependency>
 				</dependencies>
 				<executions>
 					<execution>
@@ -225,7 +228,8 @@
 				<artifactId>spotbugs-maven-plugin</artifactId>
 				<version>4.8.6.2</version>
 				<dependencies>
-					<!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+					<!-- overwrite dependency on spotbugs if you want to specify
+					the version of spotbugs -->
 					<dependency>
 						<groupId>com.github.spotbugs</groupId>
 						<artifactId>spotbugs</artifactId>
@@ -259,5 +263,4 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
 </project>
