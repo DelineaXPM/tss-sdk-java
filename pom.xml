@@ -49,7 +49,7 @@
 	</scm>
 
 	<properties>
-		<java.version>17</java.version>
+		<java.version>8</java.version>
 		<jackson.version>2.17.2</jackson.version>
 		<spring.version>6.1.12</spring.version>
 		<pmd.version>6.55.0</pmd.version>
@@ -198,7 +198,7 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.24.0</version>
 				<configuration>
-					<targetJdk>${java.version}</targetJdk>
+					<targetJdk>1.8</targetJdk>
 				</configuration>
 				<dependencies>
 					<dependency>
