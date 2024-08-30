@@ -1,7 +1,9 @@
 package com.delinea.secrets.server.spring;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,8 +15,14 @@ public class Secret {
      * Java representation of an <i>Item</i> of a <i>Secret</i>.
      */
     public static class Field {
-        private int id, fieldId, fileAttachmentId;
-        private String fieldDescription, fieldName, filename, value, slug;
+        private int id;
+        private int fieldId;
+        private int fileAttachmentId;
+        private String fieldDescription;
+        private String fieldName;
+        private String filename;
+        private String value;
+        private String slug;
 
         @JsonProperty("itemId")
         public int getId() {
@@ -55,13 +63,23 @@ public class Secret {
         }
     }
 
-    private String name, secretTemplateName;
+    private String name;
+    private String secretTemplateName;
     private String lastHeartBeatStatus;
-    private Date lastHeartBeatCheck, lastPasswordChangeAttempt;
-    private int id, folderId, secretTemplateId, siteId;
-    private boolean active, checkedOut, checkoutEnabled;
-    private List<Field> fields;
+    private Date lastHeartBeatCheck;
+    private Date lastPasswordChangeAttempt;
+    private int id;
+    private int folderId;
+    private int secretTemplateId;
+    private int siteId;
+    private boolean active;
+    private boolean checkedOut;
+    private boolean checkoutEnabled;
+    
+    // List of Field objects
+    private List<Field> fields = new ArrayList<>();
 
+    // Getters for the fields
     public String getName() {
         return name;
     }
@@ -112,12 +130,12 @@ public class Secret {
 
     @JsonProperty("items")
     public List<Field> getFields() {
-        return fields;
+        return Collections.unmodifiableList(fields); // Return an unmodifiable view
     }
 
     @Override
     public String toString() {
-        return String.format("Secret { id: %d, folderId: %d, name: %s, templateName: %s }", this.id, this.folderId,
-                this.name, this.secretTemplateName);
+        return String.format("Secret { id: %d, folderId: %d, name: %s, templateName: %s }", 
+                this.id, this.folderId, this.name, this.secretTemplateName);
     }
 }
