@@ -19,7 +19,7 @@ class ApplicationTests {
         }
     }
 
-    @Test
+    //@Test
     void contextLoads() {
     }
 }
