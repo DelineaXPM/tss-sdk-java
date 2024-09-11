@@ -18,7 +18,7 @@ You can use this SDk in your application by adding the following dependency:
 <dependency>
   <groupId>com.delinea.secrets</groupId>
   <artifactId>tss-sdk-java</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
@@ -39,17 +39,48 @@ will succeed.
 The API authenticates to Secret Server as an _Application User_.
 The SDK application gets a secret from Secret Server by it's _id_.
 
+##### 1. Using Secret Server credentials
+
 Either `secret_server.tenant` or both `secret_server.api_root_url` and `secret_server.oauth2.token_url` must be set.
 `secret_server.tenant` simplifies the configuration when accessing Secret Server Cloud by using template URLs that
 assume the default folder structure and parameterize the tenant.
 
+Set authentication_mode to 0 for fetch secret using Secret Server credentials, provide the following properties:
+
 ```ini
+secret_server.oauth2.username = app_user
+secret_server.oauth2.password = app_user_password
+```
+
+##### 2. Using the SDK client
+To fetch secret using the SDK client, you need to create a new onboarding rule and use an onboarding key for authentication.
+1. Go to Secret Server > Settings > All settings and click on SDK Client.
+2. Click the Client Onboarding tab, then the Create rule.
+3. Enter a name for the new rule(this will be your rule_name).
+4. Check the Require onboarding key box.
+5. Click Save to auto-generate an onboarding key.
+6. You can see the key,select the Show key option (this will be your onboarding_key).
+
+Set authentication_mode to 1 for fetch secret using SDK client, provide the following properties:
+
+```ini
+rule_name = create_rule_name
+onboarding_key = onboarding_key
+```
+
+#### Common properties
+The following properties are used in both authentication mode
+
+authentication_mode:
+* 0 - Fetch secret using Secret Server credentials
+* 1 - Fetch secret using SDK client
+
+```ini
+authentication_mode = authentication_mode
 secret_server.tenant = mytenant
 # or
 # secret_server.api_root_url = https://mysecretserver/SecretServer/api/v1
 # secret_server.oauth2.token_url = https://mysecretserver/SecretServer/oauth2/token
-secret_server.oauth2.username = app_user
-secret_server.oauth2.password = app_user_password
 ```
 
 When the `tenant` is set, the API assumes a the top-level domain (TLD) of _com_
@@ -97,10 +128,10 @@ private SecretServer secretServer;
 public static void main(final String[] args) {
     final Secret secret = secretServer.getSecret(1);
 
-    secret.getItems().forEach(item -> {
-        if (item.getFieldName().equals("password")) {
-            System.out.println(String.format("The password is %s", item.getValue()));
-        }
+    secret.getFields().forEach(item -> {
+			if (item.getFieldName().equalsIgnoreCase("password")) {
+				System.out.println(String.format("The password is %s", item.getValue()));
+			}
     });
 }
 ```

@@ -14,7 +14,7 @@
 
 	<groupId>com.delinea.secrets</groupId>
 	<artifactId>tss-sdk-java</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>tss-sdk-java</name>
 	<description>The Delinea Secret Server Java SDK</description>
 
@@ -201,7 +201,7 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.15.0</version>
 				<configuration>
-					<targetJdk>${java.version}</targetJdk>
+					<targetJdk>1.8</targetJdk>
 				</configuration>
 				<dependencies>
 					<dependency>
