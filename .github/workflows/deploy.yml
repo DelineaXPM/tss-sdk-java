@@ -5,7 +5,7 @@ on:
     tags:
       - v*
     branches:
-      - main
+      - addSDKClientCred
   
 jobs:
   push:
@@ -23,10 +23,10 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase
           distribution: 'temurin'
 
-      - name: Customize the Maven settings.xml
-        uses: whelk-io/maven-settings-xml-action@7c60eb95b2d5ec18f2e0e29f34c9ed69475e7a96 # v21
-        with:
-          servers: '[{ "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }, { "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }]'
+     # - name: Customize the Maven settings.xml
+      #  uses: whelk-io/maven-settings-xml-action@7c60eb95b2d5ec18f2e0e29f34c9ed69475e7a96 # v21
+       # with:
+        #  servers: '[{ "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }, { "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }]'
 
       - name: Configure the application
         run: |
