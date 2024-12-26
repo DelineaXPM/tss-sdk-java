@@ -2,8 +2,8 @@ name: Deploy
 on:
   push:
     # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
+    #tags:
+      #- v*
     branches:
       - addSDKClientCred
   
