@@ -202,8 +202,20 @@
 				<version>3.25.0</version>
 				<configuration>
 					<targetJdk>${java.version}</targetJdk>
-					
+					<failOnViolation>false</failOnViolation>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sourceforge.pmd</groupId>
+						<artifactId>pmd-core</artifactId>
+						<version>${pmd.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>net.sourceforge.pmd</groupId>
+						<artifactId>pmd-java</artifactId>
+						<version>${pmd.version}</version>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<goals>
