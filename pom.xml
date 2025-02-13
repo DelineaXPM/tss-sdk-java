@@ -202,10 +202,7 @@
 				<version>3.25.0</version>
 				<configuration>
 					<targetJdk>${java.version}</targetJdk>
-					<rulesets>
-				            <ruleset>/rulesets/java/basic.xml</ruleset>
-				            <ruleset>/rulesets/java/braces.xml</ruleset>
-				        </rulesets>
+					
 				</configuration>
 				<executions>
 					<execution>
