@@ -202,7 +202,6 @@
 				<version>3.26.0</version>
 				<configuration>
 					<targetJdk>${java.version}</targetJdk>
-					<failOnViolation>false</failOnViolation>
 				</configuration>
 				<dependencies>
 					<dependency>
