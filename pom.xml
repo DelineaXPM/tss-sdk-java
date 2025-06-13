@@ -54,7 +54,7 @@
 	<properties>
 		<java.version>8</java.version>
 		<jackson.version>2.19.0</jackson.version>
-		<spring.version>6.2.6</spring.version>
+		<spring.version>6.2.8</spring.version>
 		<pmd.version>7.13.0</pmd.version>
 	</properties>
 
