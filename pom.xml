@@ -53,9 +53,11 @@
 
 	<properties>
 		<java.version>8</java.version>
+snyk-upgrade-ccaba98c737430a962824c4fa4e2b513
 		<jackson.version>2.19.1</jackson.version>
 		<spring.version>6.2.8</spring.version>
 		<pmd.version>7.13.0</pmd.version>
+main
 	</properties>
 
 	<dependencies>
