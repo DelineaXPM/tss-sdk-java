@@ -25,12 +25,10 @@ public class SecretServer extends RestTemplate {
 	 * @return the {@link Secret} object
 	 */
 	public Secret getSecret(final int id, final boolean fetchFileAttachments) {
-		final Map<String, String> params = new HashMap<String, String>();
-
+		final Map<String, String> params = new HashMap<>();
 		params.put("id", String.valueOf(id));
 
 		final Secret secret = getForObject(SECRET_ID_URI, Secret.class, params);
-
 		if (fetchFileAttachments) {
 			secret.getFields().forEach(field -> {
 				if (field.getFileAttachmentId() > 0) {

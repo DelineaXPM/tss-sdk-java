@@ -1,7 +1,5 @@
 package com.delinea.secrets.server.spring;
 
-import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
-
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLEncoder;
@@ -15,7 +13,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -33,7 +30,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import org.springframework.web.util.UriBuilderFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -58,9 +54,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Component
 public class SecretServerFactoryBean implements FactoryBean<SecretServer>, InitializingBean {
-	public static final String DEFAULT_API_URL_TEMPLATE = "https://%s.secretservercloud.%s/api/v1",
-			DEFAULT_OAUTH2_TOKEN_URL_TEMPLATE = "https://%s.secretservercloud.%s/oauth2/token", DEFAULT_TLD = "com";
-
 	static class AccessGrant {
 		private String accessToken, refreshToken, tokenType;
 		private int expiresIn;
@@ -97,46 +90,25 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 	private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
 
 	private static final String AUTHORIZATION_TOKEN_TYPE = "Bearer";
-
-	@Value("${secret_server.api_root_url_template:" + DEFAULT_API_URL_TEMPLATE + "}")
-	private String apiRootUrlTemplate;
-
-	@Value("${secret_server.api_root_url:#{null}}")
-	private String apiRootUrl;
-
-	private String username;
-
-	private String password;
-
-	@Value("${secret_server.oauth2.token_url_template:" + DEFAULT_OAUTH2_TOKEN_URL_TEMPLATE + "}")
-	private String tokenUrlTemplate;
-
-	@Value("${secret_server.oauth2.token_url:#{null}}")
-	private String tokenUrl;
-
-	@Value("${secret_server.tenant:#{null}}")
-	private String tenant;
-
-	@Value("${secret_server.tld:" + DEFAULT_TLD + "}")
-	private String tld;
-
+	private String API_VERSION;
 	private String ruleName;
 
 	private String onboardingKey;
-
 	private int authenticationMode;
-
 	private String clientId;
-
 	private String clientSecret;
+	private String serverUrl;
+	private String secreterverUrl;
+	private String serverUsername;
+	private String serverPassword;
 
 	@Autowired(required = false)
 	private ClientHttpRequestFactory requestFactory;
 
-	private UriBuilderFactory uriBuilderFactory;
-
 	@Autowired
 	private Environment environment;
+	@Autowired
+	private AuthenticationService authenticationService;
 	public static final int SDK_CLIENT_AUTH_MODE = 1;
 	public static final int DEFAULT_AUTH_MODE = 0;
 	@Override
@@ -147,48 +119,70 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 		} else {
 			authenticationMode = DEFAULT_AUTH_MODE;
 		}
-
+		String apiVersionProp = environment.getProperty("api_version");
+		this.API_VERSION = (apiVersionProp != null && !apiVersionProp.isEmpty()) ? apiVersionProp : "v1";
 		if (authenticationMode == DEFAULT_AUTH_MODE) {
-			this.username = environment.getProperty("secret_server.oauth2.username");
-			this.password = environment.getProperty("secret_server.oauth2.password");
-			Assert.state(StringUtils.hasText(username) && StringUtils.hasText(password),
-					"secret_server.oauth2.username and secret_server.oauth2.password must be set when authenticationMode is 0");
+			this.serverUsername = environment.getProperty("server_username");
+			this.serverPassword = environment.getProperty("server_password");
+			Assert.state(StringUtils.hasText(serverUsername) && StringUtils.hasText(serverPassword),
+				"server.username and secret.password must be set when authenticationMode is 0");
 		} else {
 			this.ruleName = environment.getProperty("rule_name");
 			this.onboardingKey = environment.getProperty("onboarding_key");
 			Assert.state(StringUtils.hasText(ruleName) && StringUtils.hasText(onboardingKey),
 					"rule_name and onboarding_key must be set when authenticationMode is 1");
 		}
-		Assert.state(StringUtils.hasText(apiRootUrlTemplate) && StringUtils.hasText(tokenUrlTemplate)
-				|| StringUtils.hasText(apiRootUrl) && StringUtils.hasText(tokenUrl) || StringUtils.hasText(tenant),
-				"Either secret_server.tenant or both of either secret_server.api_root_url and secret_server.oauth2.token_url or secret_server.api_root_url_template and secret_server.oauth2.token_url_template must be set.");
+		this.serverUrl = environment.getProperty("server_url");
+		Assert.state(StringUtils.hasText(serverUrl),
+				"server_url must be set.");
 
-		tld = tld.replaceAll("^\\.*(.*?)\\.*$", "$1");
-		uriBuilderFactory = new DefaultUriBuilderFactory(fromUriString(
-				StringUtils.hasText(tenant) ? String.format(apiRootUrlTemplate.replaceAll("/*$", ""), tenant, tld)
-						: apiRootUrl.replaceAll("/*$", "")));
 		if (requestFactory == null)
 			requestFactory = new SimpleClientHttpRequestFactory();
 	}
 
-	private AccessGrant getAccessGrant() throws UnknownHostException, UnsupportedEncodingException {
-		if (authenticationMode == SDK_CLIENT_AUTH_MODE) {
+	private AccessGrant getAccessGrant() throws UnknownHostException, UnsupportedEncodingException,Exception {
+		if (authenticationMode == DEFAULT_AUTH_MODE) {
+			AuthenticationModel authenticationModel = isPlatfromOrSS();
+			if(authenticationModel != null) {
+				if (authenticationModel.isPlatformLogin()) {
+					AccessGrant accessGrant = new AccessGrant();
+					accessGrant.accessToken = authenticationModel.getToken();
+					this.secreterverUrl = authenticationModel.getVaultURL();
+					return accessGrant;
+				} else {
+					return getTokenUsingSScred();
+				}
+			}else {
+				throw new NullPointerException("Invalid Server URL ");
+			}
+		}else {
+			this.secreterverUrl = serverUrl;
 			setSDKClientCred();
 			return getTokenUsingSDKClient();
-		} else {
-			return getTokenUsingSScred();
 		}
+	}
+	
+	private AuthenticationModel isPlatfromOrSS() throws Exception {
+		AuthenticationModel authenticationModel = authenticationService
+				.authenticateAsync(new AuthenticationModel(serverUsername, serverPassword, serverUrl));
+		if (authenticationModel != null) {
+			if (authenticationModel.isPlatformLogin()) {
+				return authenticationModel;
+			} else {
+				this.secreterverUrl = serverUrl;
+				return authenticationModel;
+			}
+		}
+		return null;
 	}
 
 	private AccessGrant getTokenUsingSScred() {
 		final MultiValueMap<String, String> request = new LinkedMultiValueMap<String, String>();
 
-		request.add(GRANT_REQUEST_USERNAME_PROPERTY, username);
-		request.add(GRANT_REQUEST_PASSWORD_PROPERTY, password);
+		request.add(GRANT_REQUEST_USERNAME_PROPERTY, serverUsername);
+		request.add(GRANT_REQUEST_PASSWORD_PROPERTY, serverPassword);
 		request.add(GRANT_REQUEST_GRANT_TYPE_PROPERTY, GRANT_REQUEST_GRANT_TYPE);
-		return new RestTemplate().postForObject(
-				StringUtils.hasText(tenant) ? String.format(tokenUrlTemplate.replaceAll("/*$", ""), tenant, tld)
-						: tokenUrl.replaceAll("/*$", ""),
+		return new RestTemplate().postForObject(secreterverUrl+"/oauth2/token".replaceAll("/*$", ""),
 				request, AccessGrant.class);
 	}
 
@@ -200,11 +194,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 		headers.setContentType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED);
 
 		HttpEntity<String> entity = new HttpEntity<>(body, headers);
-		String url = StringUtils.hasText(tenant)
-				? String.format(tokenUrlTemplate.replaceAll("/*$", ""), tenant, tld)
-				: tokenUrl.replaceAll("/*$", "");
-
-		ResponseEntity<AccessGrant> response = new RestTemplate().exchange(url, HttpMethod.POST, entity,
+		ResponseEntity<AccessGrant> response = new RestTemplate().exchange(serverUrl+ "/oauth2/token", HttpMethod.POST, entity,
 				AccessGrant.class);
 
 		if (response.getStatusCode() == HttpStatus.OK) {
@@ -228,10 +218,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 		headers.set("Content-Type", "application/json");
 
 		HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
-		String url = StringUtils.hasText(tenant)
-				? String.format(apiRootUrlTemplate.replaceAll("/*$", "") +"/sdk-client-accounts", tenant, tld)
-				: apiRootUrl.replaceAll("/*$", "") +"/sdk-client-accounts";
-		ResponseEntity<Map<String, Object>> response = new RestTemplate().exchange(url, HttpMethod.POST, entity,
+		ResponseEntity<Map<String, Object>> response = new RestTemplate().exchange(serverUrl+"/api/"+API_VERSION+"/sdk-client-accounts", HttpMethod.POST, entity,
 				new ParameterizedTypeReference<Map<String, Object>>() {
 				});
 
@@ -246,16 +233,21 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 
 	@Override
 	public SecretServer getObject() throws Exception {
-		final SecretServer secretServer = new SecretServer();
-			secretServer.setUriTemplateHandler(uriBuilderFactory);
-			secretServer.setRequestFactory( // Add the 'Authorization: Bearer {accessGrant.accessToken}' HTTP header
-					new InterceptingClientHttpRequestFactory(requestFactory,
-							Arrays.asList((request, body, execution) -> {
-								request.getHeaders().add(AUTHORIZATION_HEADER_NAME,
-										String.format("%s %s", AUTHORIZATION_TOKEN_TYPE, getAccessGrant().accessToken));
-								return execution.execute(request, body);
-							})));
-		return secretServer;
+	    AccessGrant accessGrant = getAccessGrant();
+	    final SecretServer secretServer = new SecretServer();
+	    secretServer.setUriTemplateHandler(
+	        new DefaultUriBuilderFactory(secreterverUrl + "/api/"+API_VERSION)
+	    );
+
+	    secretServer.setRequestFactory(
+	        new InterceptingClientHttpRequestFactory(requestFactory,
+	            Arrays.asList((request, body, execution) -> {
+	                request.getHeaders().add(AUTHORIZATION_HEADER_NAME,
+	                        String.format("%s %s", AUTHORIZATION_TOKEN_TYPE, accessGrant.accessToken));
+	                return execution.execute(request, body);
+	            })));
+
+	    return secretServer;
 	}
 
 	@Override
