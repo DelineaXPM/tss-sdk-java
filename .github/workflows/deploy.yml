@@ -5,7 +5,7 @@ on:
     #tags:
       #- v*
     branches:
-      - platfromSupport
+      - main
   
 jobs:
   push:
@@ -20,8 +20,9 @@ jobs:
         with:
           java-version: 17
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase
           distribution: 'temurin'
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Customize the Maven settings.xml
         uses: whelk-io/maven-settings-xml-action@9dc09b23833fa9aa7f27b63db287951856f3433d # v22
@@ -39,4 +40,6 @@ jobs:
 
       - name: Deploy with Maven
         run: |
-          mvn -P sonatypeDeploy -B -ntp clean deploy -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
+          mvn -P sonatypeDeploy -B -ntp clean deploy
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

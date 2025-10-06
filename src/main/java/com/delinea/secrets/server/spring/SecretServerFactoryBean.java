@@ -109,8 +109,12 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 	private Environment environment;
 	@Autowired
 	private AuthenticationService authenticationService;
-	public static final int SDK_CLIENT_AUTH_MODE = 1;
-	public static final int DEFAULT_AUTH_MODE = 0;
+	private static final int SDK_CLIENT_AUTH_MODE = 1;
+	private static final int DEFAULT_AUTH_MODE = 0;
+	
+	 /**
+     * After properties are set, validate configuration and initialize requestFactory if null.
+     */
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		String authModeStr = environment.getProperty("authentication_mode");
@@ -203,7 +207,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 			return null;
 	}
 
-	public void setSDKClientCred() throws UnknownHostException {
+	private void setSDKClientCred() throws UnknownHostException {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("Description",
 				String.format("Machine: %s, OS: %s - %s %s", InetAddress.getLocalHost().getHostName(),

@@ -24,36 +24,44 @@ public class Secret {
         private String value;
         private String slug;
 
+        /** Returns the item ID */
         @JsonProperty("itemId")
         public int getId() {
             return id;
         }
 
+        /** Returns the field ID */
         public int getFieldId() {
             return fieldId;
         }
 
+        /** Returns file attachment ID */
         public int getFileAttachmentId() {
             return fileAttachmentId;
         }
 
+        /** Returns field description */
         public String getFieldDescription() {
             return fieldDescription;
         }
 
+        /** Returns field name */
         public String getFieldName() {
             return fieldName;
         }
-
+        
+        /** Returns filename */
         public String getFilename() {
             return filename;
         }
 
+        /** Returns the field value */
         @JsonProperty("itemValue")
         public String getValue() {
             return value;
         }
 
+        /** Returns the slug */
         public String getSlug() {
             return slug;
         }
@@ -79,55 +87,67 @@ public class Secret {
     // List of Field objects
     private List<Field> fields = new ArrayList<>();
 
-    // Getters for the fields
+    /** Returns the secret name */
     public String getName() {
         return name;
     }
 
+    /** Returns the template name */
     public String getSecretTemplateName() {
         return secretTemplateName;
     }
 
+    /** Returns last heartbeat status */
     public String getLastHeartBeatStatus() {
         return lastHeartBeatStatus;
     }
 
+    /** Returns last heartbeat check date */
     public Date getLastHeartBeatCheck() {
         return new Date(lastHeartBeatCheck.getTime());
     }
 
+    /** Returns last password change attempt */
     public Date getLastPasswordChangeAttempt() {
         return new Date(lastPasswordChangeAttempt.getTime());
     }
 
+    /** Returns secret ID */
     public int getId() {
         return id;
     }
 
+    /** Returns folder ID */
     public int getFolderId() {
         return folderId;
     }
 
+    /** Returns template ID */
     public int getSecretTemplateId() {
         return secretTemplateId;
     }
 
+    /** Returns site ID */
     public int getSiteId() {
         return siteId;
     }
 
+    /** Returns whether the secret is active */
     public boolean isActive() {
         return active;
     }
 
+    /** Returns whether the secret is checked out */
     public boolean isCheckedOut() {
         return checkedOut;
     }
 
+    /** Returns whether checkout is enabled */
     public boolean isCheckoutEnabled() {
         return checkoutEnabled;
     }
 
+    /** Returns an unmodifiable list of fields */
     @JsonProperty("items")
     public List<Field> getFields() {
         return Collections.unmodifiableList(fields); // Return an unmodifiable view

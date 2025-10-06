@@ -9,19 +9,27 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Represents the response from Secret Server containing a list of Vaults.
+ */
 public class VaultsResponseModel {
 
     @JsonProperty("vaults")
     private List<Vault> vaults = new ArrayList<>();
 
+    /** Returns a copy of the vaults list */
     public List<Vault> getVaults() {
         return new ArrayList<>(vaults);
     }
 
+    /** Sets the vaults list */
     public void setVaults(List<Vault> vaults) {
         this.vaults = (vaults == null) ? new ArrayList<>() : new ArrayList<>(vaults);
     }
 
+    /**
+     * Represents a Vault object.
+     */
     @Setter
     @Getter
     public static class Vault {
@@ -41,15 +49,20 @@ public class VaultsResponseModel {
         @JsonProperty("connection")
         private Connection connection;
 
+        /** Returns a copy of the connection */
         public Connection getConnection() {
             return (connection == null) ? null : new Connection(connection);
         }
 
+        /** Sets the connection */
         public void setConnection(Connection connection) {
             this.connection = (connection == null) ? null : new Connection(connection);
         }
     }
 
+    /**
+     * Represents connection information for a Vault.
+     */
     @Data
     public static class Connection {
         @JsonProperty("url")
@@ -57,8 +70,10 @@ public class VaultsResponseModel {
         @JsonProperty("oAuthProfileId")
         private String oAuthProfileId;
 
+        /** Constructor */
         public Connection() {}
 
+        /** Copy constructor */
         public Connection(Connection other) {
             if (other != null) {
                 this.url = other.url;
