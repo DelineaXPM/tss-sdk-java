@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
-
+/** Represents OAuth2 tokens returned from platform authentication. */
 @Data
 public class OAuthTokens {
 	@JsonProperty("access_token")

@@ -17,10 +17,18 @@ import org.springframework.web.client.RestTemplate;
 import com.delinea.secrets.server.spring.VaultsResponseModel.Vault;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/** Handles authentication against Delinea Platform and vault retrieval. */
 @Component
 public class PlatformLogin {
     private RestTemplate restTemplate = new RestTemplate();
 
+    /**
+     * Authenticates the user on the Delinea Platform and retrieves vault info.
+     *
+     * @param authModel authentication credentials
+     * @return updated AuthenticationModel with token and vault details
+     * @throws Exception if authentication or vault retrieval fails
+     */
     public AuthenticationModel platformAuthentication(AuthenticationModel authModel) throws Exception {
         try {
             // 1. Get Access Token
@@ -74,6 +82,13 @@ public class PlatformLogin {
         return new AuthenticationModel(errorMessage, true);
     }
 
+    /**
+     * Authenticates the user on the Delinea Platform and retrieves vault info.
+     *
+     * @param authModel authentication credentials
+     * @return updated AuthenticationModel with token and vault details
+     * @throws Exception if authentication or vault retrieval fails
+     */
     private ResponseEntity<String> getAccessToken(AuthenticationModel authModel) {
         String apiUrl = authModel.getServerURL().replaceAll("/$", "") + "/identity/api/oauth2/token/xpmplatform";
         String scope = "xpmheadless";

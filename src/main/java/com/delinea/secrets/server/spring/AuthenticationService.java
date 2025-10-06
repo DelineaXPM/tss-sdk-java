@@ -9,14 +9,24 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Handles authentication logic for both Secret Server and Platform.
+ * <p>
+ * Determines which type of login to perform based on health check endpoints.
+ */
 @Service
 public class AuthenticationService implements IAuthenticationService {
-	//@Autowired
 	private RestTemplate restTemplate = new RestTemplate();
-	//@Autowired
 	private PlatformLogin platformLogin = new PlatformLogin();
 
-
+	 /**
+     * Determines whether to authenticate against Secret Server or Platform
+     * by performing health checks, and proceeds accordingly.
+     *
+     * @param authModel the authentication details
+     * @return populated {@link AuthenticationModel} with token and state
+     * @throws Exception if authentication fails or endpoints are unreachable
+     */
     @Override
     public AuthenticationModel authenticateAsync(AuthenticationModel authModel) throws Exception {
         try {
