@@ -67,7 +67,7 @@ public class PlatformLogin {
 
             if (vault.isPresent()) {
                 authModel.setVaultURL(vault.get().getConnection().getUrl());
-                authModel.setVaultType(vault.get().getType()); // check vaulttype
+                authModel.setVaultType(vault.get().getType());
             } else {
                 return handleErrorResponse("Unable to fetch vaults from server " + authModel.getServerURL());
             }

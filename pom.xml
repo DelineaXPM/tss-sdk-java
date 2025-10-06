@@ -48,11 +48,12 @@
 		<connection>scm:git:https://github.com/DelineaXPM/${project.artifactId}.git</connection>
 		<developerConnection>
 			scm:git:ssh://git@github.com/DelineaXPM/${project.artifactId}.git</developerConnection>
+		  <url>https://github.com/DelineaXPM/${project.artifactId}</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
-		<java.version>8</java.version>
+		<java.version>17</java.version>
 		<jackson.version>2.19.1</jackson.version>
 		<spring.version>6.2.8</spring.version>
 		<pmd.version>7.15.0</pmd.version>
@@ -129,14 +130,15 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.7.0</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.3.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<publishingServerId>ossrh</publishingServerId>
+					<tokenAuth>true</tokenAuth>
+					<autoPublish>true</autoPublish>
+					<waitUntil>published</waitUntil>
 				</configuration>
 			</plugin>
 			<plugin>
