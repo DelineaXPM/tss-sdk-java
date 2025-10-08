@@ -107,8 +107,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 
 	@Autowired
 	private Environment environment;
-	@Autowired
-	private AuthenticationService authenticationService;
+	private AuthenticationService authenticationService = new AuthenticationService();
 	private static final int SDK_CLIENT_AUTH_MODE = 1;
 	private static final int DEFAULT_AUTH_MODE = 0;
 	
