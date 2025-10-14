@@ -18,7 +18,7 @@ You can use this SDk in your application by adding the following dependency:
 <dependency>
   <groupId>com.delinea.secrets</groupId>
   <artifactId>tss-sdk-java</artifactId>
-  <version>1.0.2</version>
+  <version>2.0</version>
 </dependency>
 ```
 
@@ -36,29 +36,81 @@ will succeed.
 
 ### Settings
 
-The API authenticates to Secret Server as an _Application User_.
-The SDK application gets a secret from Secret Server by it's _id_.
+The API authenticates to Secret Server using either an  _Application User_  or a Delinea Platform  _Service User_ .
+The SDK application gets a secret from Secret Server by it's  _id_ .
 
-Either `secret_server.tenant` or both `secret_server.api_root_url` and `secret_server.oauth2.token_url` must be set.
-`secret_server.tenant` simplifies the configuration when accessing Secret Server Cloud by using template URLs that
-assume the default folder structure and parameterize the tenant.
+### Secret Server Integration
+##### 1. Using Secret Server credentials
 
-```ini
-secret_server.tenant = mytenant
-# or
-# secret_server.api_root_url = https://mysecretserver/SecretServer/api/v1
-# secret_server.oauth2.token_url = https://mysecretserver/SecretServer/oauth2/token
-secret_server.oauth2.username = app_user
-secret_server.oauth2.password = app_user_password
-```
+`authentication_mode` and `server_url` must be set.
 
-When the `tenant` is set, the API assumes a the top-level domain (TLD) of _com_
-but it can be overridden:
+Set authentication_mode to 0 for fetch secret using Secret Server credentials, provide the following properties:
 
 ```ini
-secret_server.tld = com
+authentication_mode =0
+server_url =Secret_Server_url
+api_version=v1
+
+server.username =application_user
+server.password =application_user_password 
 ```
 
+##### 2. Using the SDK client
+To fetch secret using the SDK client, you need to create a new onboarding rule and use an onboarding key for authentication.
+1. Go to Secret Server > Settings > All settings and click on SDK Client.
+2. Click the Client Onboarding tab, then the Create rule.
+3. Enter a name for the new rule(this will be your rule_name).
+4. Check the Require onboarding key box.
+5. Click Save to auto-generate an onboarding key.
+6. You can see the key,select the Show key option (this will be your onboarding_key).
+
+Set authentication_mode to 1 for fetch secret using SDK client, provide the following properties:
+
+```ini
+authentication_mode =1
+server_url =Secret_Server_url
+api_version=v1
+
+rule_name =create_rule_name
+onboarding_key =onboarding_key
+```
+
+### Delinea Platfrom Integration
+##### 1. Using Delinea PLatform credentials
+
+`authentication_mode` and `server_url` must be set.
+
+Set authentication_mode to 0 for fetch secret using Delinea Platform credentials, provide the following properties:
+
+```ini
+authentication_mode =0
+server_url =Delinea_Platform_url
+api_version=v1
+
+server.username =service_user
+server.password =service_user_password
+```
+##### 2. Using the SDK client
+To fetch secret using the SDK client, you need to create a new onboarding rule and use an onboarding key for authentication.
+1. Go to Delinea Platform > Settings > Secret Server > Administration > Tools and integrations > click on SDK Client.
+2. Click the Client Onboarding tab, then the Create rule.
+3. Enter a name for the new rule(this will be your rule_name).
+4. Check the Require onboarding key box.
+5. Click Save to auto-generate an onboarding key.
+6. You can see the key, select the Show key option (this will be your onboarding_key).
+
+Set authentication_mode=1 to fetch secrets using the SDK client.
+Set server_url to the Secret Server URL. To find the Secret Server URL in Delinea Platform, go to Settings > Secret Server > Secret Server connection and copy the Secret Server URL.
+Provide the following properties:
+
+```ini
+authentication_mode =1
+server_url =Secret_Server_url
+api_version=v1
+
+rule_name =create_rule_name
+onboarding_key =onboarding_key
+```
 ## Run the jar
 
 After the SDK application settings are configured the jar can be built:
@@ -97,10 +149,10 @@ private SecretServer secretServer;
 public static void main(final String[] args) {
     final Secret secret = secretServer.getSecret(1);
 
-    secret.getItems().forEach(item -> {
-        if (item.getFieldName().equals("password")) {
-            System.out.println(String.format("The password is %s", item.getValue()));
-        }
+    secret.getFields().forEach(item -> {
+			if (item.getFieldName().equalsIgnoreCase("password")) {
+				System.out.println(String.format("The password is %s", item.getValue()));
+			}
     });
 }
 ```

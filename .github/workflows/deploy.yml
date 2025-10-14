@@ -2,8 +2,8 @@ name: Deploy
 on:
   push:
     # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
+    #tags:
+      #- v*
     branches:
       - main
   
@@ -20,13 +20,14 @@ jobs:
         with:
           java-version: 17
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase
           distribution: 'temurin'
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Customize the Maven settings.xml
         uses: whelk-io/maven-settings-xml-action@9dc09b23833fa9aa7f27b63db287951856f3433d # v22
         with:
-          servers: '[{ "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }, { "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }]'
+           servers: '[{ "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }]'
 
       - name: Configure the application
         run: |
@@ -39,4 +40,6 @@ jobs:
 
       - name: Deploy with Maven
         run: |
-          mvn -P github -B -C -ff -ntp -U deploy -Dregistry=https://maven.pkg.github.com/delineaXPM -Dtoken=${{ secrets.GH_TOKEN }} -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
+          mvn -P sonatypeDeploy -B -ntp clean deploy
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
