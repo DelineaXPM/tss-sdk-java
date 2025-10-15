@@ -2,9 +2,11 @@ package com.delinea.secrets.server.spring;
 
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
 import java.util.Arrays;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,6 +23,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Creates an initializes a {@link SecretServer} object using Spring application
@@ -82,6 +86,19 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
 
     private static final String AUTHORIZATION_TOKEN_TYPE = "Bearer";
+    
+    // ======== Proxy Properties ========
+    @Value("${secret_server.proxy.host:#{null}}")
+    private String proxyHost;
+
+    @Value("${secret_server.proxy.port:0}")
+    private int proxyPort;
+
+    @Value("${secret_server.proxy.username:#{null}}")
+    private String proxyUsername;
+
+    @Value("${secret_server.proxy.password:#{null}}")
+    private String proxyPassword;
 
     @Value("${secret_server.api_root_url_template:" + DEFAULT_API_URL_TEMPLATE + "}")
     private String apiRootUrlTemplate;
@@ -123,7 +140,37 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
                 StringUtils.hasText(tenant) ? String.format(apiRootUrlTemplate.replaceAll("/*$", ""), tenant, tld)
                         : apiRootUrl.replaceAll("/*$", "")));
         if (requestFactory == null)
-            requestFactory = new SimpleClientHttpRequestFactory();
+            requestFactory = createRequestFactoryWithProxy();
+    }
+
+    /**
+     * Builds an HTTP request factory with optional proxy support.
+     */
+    private ClientHttpRequestFactory createRequestFactoryWithProxy() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+
+        if (StringUtils.hasText(proxyHost) && proxyPort > 0) {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
+            factory.setProxy(proxy);
+
+            System.out.println("[SecretServerFactoryBean] Using proxy: " + proxyHost + ":" + proxyPort);
+
+            if (StringUtils.hasText(proxyUsername)) {
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(
+                                proxyUsername,
+                                proxyPassword != null ? proxyPassword.toCharArray() : new char[0]);
+                    }
+                });
+                System.out.println("[SecretServerFactoryBean] Proxy authentication set for user: " + proxyUsername);
+            }
+        } else {
+            System.out.println("[SecretServerFactoryBean] No proxy configured.");
+        }
+
+        return factory;
     }
 
     private AccessGrant getAccessGrant() {
@@ -132,23 +179,27 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
         request.add(GRANT_REQUEST_USERNAME_PROPERTY, username);
         request.add(GRANT_REQUEST_PASSWORD_PROPERTY, password);
         request.add(GRANT_REQUEST_GRANT_TYPE_PROPERTY, GRANT_REQUEST_GRANT_TYPE);
-        return new RestTemplate().postForObject(
-                StringUtils.hasText(tenant) ? String.format(tokenUrlTemplate.replaceAll("/*$", ""), tenant, tld)
-                        : tokenUrl.replaceAll("/*$", ""),
-                request, AccessGrant.class);
-    }
+        String url = StringUtils.hasText(tenant)
+                ? String.format(tokenUrlTemplate.replaceAll("/*$", ""), tenant, tld)
+                : tokenUrl.replaceAll("/*$", "");
 
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        return restTemplate.postForObject(url, request, AccessGrant.class);
+    }
+    
     @Override
     public SecretServer getObject() throws Exception {
         final SecretServer secretServer = new SecretServer();
 
         secretServer.setUriTemplateHandler(uriBuilderFactory);
-        secretServer.setRequestFactory( // Add the 'Authorization: Bearer {accessGrant.accessToken}' HTTP header
-                new InterceptingClientHttpRequestFactory(requestFactory, Arrays.asList((request, body, execution) -> {
-                    request.getHeaders().add(AUTHORIZATION_HEADER_NAME,
-                            String.format("%s %s", AUTHORIZATION_TOKEN_TYPE, getAccessGrant().accessToken));
+        secretServer.setRequestFactory(new InterceptingClientHttpRequestFactory(
+                requestFactory,
+                Arrays.asList((request, body, execution) -> {
+                    request.getHeaders().add("Authorization",
+                            "Bearer " + getAccessGrant().accessToken);
                     return execution.execute(request, body);
                 })));
+
         return secretServer;
     }
 
