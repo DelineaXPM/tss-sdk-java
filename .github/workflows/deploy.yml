@@ -1,11 +1,9 @@
 name: Deploy
 on:
   push:
-    # Publish `v1.2.3` tags as releases.
-    #tags:
-      #- v*
-    branches:
-      - main
+    # Trigger publish when pushing version tags like v1.2.3, v2.0, etc.
+    tags:
+      - "v*"
   
 jobs:
   push:
@@ -13,10 +11,9 @@ jobs:
     if: github.event_name == 'push'
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -25,7 +22,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Customize the Maven settings.xml
-        uses: whelk-io/maven-settings-xml-action@9dc09b23833fa9aa7f27b63db287951856f3433d # v22
+        uses: whelk-io/maven-settings-xml-action@v22
         with:
            servers: '[{ "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }]'
 
