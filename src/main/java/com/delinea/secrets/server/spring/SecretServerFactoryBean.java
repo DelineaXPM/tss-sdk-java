@@ -2,17 +2,22 @@ package com.delinea.secrets.server.spring;
 
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
-import java.net.Authenticator;
-import java.net.InetSocketAddress;
-import java.net.PasswordAuthentication;
-import java.net.Proxy;
 import java.util.Arrays;
 
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.http.HttpHost;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.InterceptingClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -146,31 +151,39 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
     /**
      * Builds an HTTP request factory with optional proxy support.
      */
+
+   
+
     private ClientHttpRequestFactory createRequestFactoryWithProxy() {
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-
-        if (StringUtils.hasText(proxyHost) && proxyPort > 0) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-            factory.setProxy(proxy);
-
-            System.out.println("[SecretServerFactoryBean] Using proxy: " + proxyHost + ":" + proxyPort);
-
-            if (StringUtils.hasText(proxyUsername)) {
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(
-                                proxyUsername,
-                                proxyPassword != null ? proxyPassword.toCharArray() : new char[0]);
-                    }
-                });
-                System.out.println("[SecretServerFactoryBean] Proxy authentication set for user: " + proxyUsername);
-            }
-        } else {
+        if (!StringUtils.hasText(proxyHost) || proxyPort <= 0) {
             System.out.println("[SecretServerFactoryBean] No proxy configured.");
+            return new SimpleClientHttpRequestFactory();
         }
 
-        return factory;
+        System.out.println("[SecretServerFactoryBean] Using proxy: " + proxyHost + ":" + proxyPort);
+
+        HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+
+        BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+        if (StringUtils.hasText(proxyUsername)) {
+            credsProvider.setCredentials(
+                new AuthScope(proxyHost, proxyPort),
+                new UsernamePasswordCredentials(proxyUsername, proxyPassword.toCharArray())
+            );
+            System.out.println("[SecretServerFactoryBean] Proxy authentication set for user: " + proxyUsername);
+        }
+
+        RequestConfig config = RequestConfig.custom()
+            .setProxy(proxy)
+            .build();
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+            .setDefaultCredentialsProvider(credsProvider)
+            .setDefaultRequestConfig(config)
+            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .build();
+
+        return new HttpComponentsClientHttpRequestFactory(httpClient);
     }
 
     private AccessGrant getAccessGrant() {
