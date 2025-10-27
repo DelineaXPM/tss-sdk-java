@@ -1,4 +1,4 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.platform.service;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -14,7 +14,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.delinea.secrets.server.spring.VaultsResponseModel.Vault;
+import com.delinea.platform.model.OAuthTokens;
+import com.delinea.platform.model.VaultsResponseModel;
+import com.delinea.platform.model.VaultsResponseModel.Vault;
+import com.delinea.server.spring.AuthenticationModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** Handles authentication against Delinea Platform and vault retrieval. */

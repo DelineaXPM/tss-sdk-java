@@ -14,7 +14,7 @@
 
 	<groupId>com.delinea.secrets</groupId>
 	<artifactId>tss-sdk-java</artifactId>
-	<version>2.0</version>
+	<version>2.1</version>
 	<name>tss-sdk-java</name>
 	<description>The Delinea Secret Server Java SDK</description>
 
@@ -67,6 +67,19 @@
 			<version>1.18.20</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
+			<version>5.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents.core5</groupId>
+			<artifactId>httpcore5</artifactId>
+			<version>5.3.6</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>

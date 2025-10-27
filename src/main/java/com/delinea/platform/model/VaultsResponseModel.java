@@ -1,4 +1,4 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.platform.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +17,20 @@ public class VaultsResponseModel {
     @JsonProperty("vaults")
     private List<Vault> vaults = new ArrayList<>();
 
-    /** Returns a copy of the vaults list */
+    /**
+     * Returns a copy of the vaults list.
+     *
+     * @return a list of {@link Vault} objects
+     */
     public List<Vault> getVaults() {
         return new ArrayList<>(vaults);
     }
 
-    /** Sets the vaults list */
+    /**
+     * Sets the vaults list.
+     *
+     * @param vaults the list of {@link Vault} objects to set
+     */
     public void setVaults(List<Vault> vaults) {
         this.vaults = (vaults == null) ? new ArrayList<>() : new ArrayList<>(vaults);
     }
@@ -49,12 +57,20 @@ public class VaultsResponseModel {
         @JsonProperty("connection")
         private Connection connection;
 
-        /** Returns a copy of the connection */
+        /**
+         * Returns a copy of the connection object.
+         *
+         * @return a copy of the {@link Connection}, or {@code null} if not set
+         */
         public Connection getConnection() {
             return (connection == null) ? null : new Connection(connection);
         }
 
-        /** Sets the connection */
+        /**
+         * Sets the connection information for this Vault.
+         *
+         * @param connection the {@link Connection} object to set
+         */
         public void setConnection(Connection connection) {
             this.connection = (connection == null) ? null : new Connection(connection);
         }
@@ -73,7 +89,11 @@ public class VaultsResponseModel {
         /** Constructor */
         public Connection() {}
 
-        /** Copy constructor */
+        /**
+         * Copy constructor that creates a new Connection from another instance.
+         *
+         * @param other the other {@link Connection} object to copy from
+         */
         public Connection(Connection other) {
             if (other != null) {
                 this.url = other.url;

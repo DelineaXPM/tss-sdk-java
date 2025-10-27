@@ -1,4 +1,4 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.platform.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

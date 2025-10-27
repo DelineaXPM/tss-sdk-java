@@ -1,4 +1,4 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.server.spring;
 
 import java.util.Collections;
 import java.util.Date;
@@ -24,48 +24,85 @@ public class Secret {
         private String value;
         private String slug;
 
-        /** Returns the item ID */
+        /**
+         * Returns the item ID.
+         * 
+         * @return the unique ID of this field item
+         */
         @JsonProperty("itemId")
         public int getId() {
             return id;
         }
 
-        /** Returns the field ID */
+        /**
+         * Returns the field ID.
+         * 
+         * @return the unique ID of the field definition
+         */
         public int getFieldId() {
             return fieldId;
         }
 
-        /** Returns file attachment ID */
+        /**
+         * Returns the file attachment ID, if the field stores a file.
+         * 
+         * @return the file attachment ID
+         */
         public int getFileAttachmentId() {
             return fileAttachmentId;
         }
 
-        /** Returns field description */
+        /**
+         * Returns the field description.
+         * 
+         * @return the field description text
+         */
         public String getFieldDescription() {
             return fieldDescription;
         }
 
-        /** Returns field name */
+        /**
+         * Returns the field name.
+         * 
+         * @return the name of the field
+         */
         public String getFieldName() {
             return fieldName;
         }
-        
-        /** Returns filename */
+
+        /**
+         * Returns the filename if this field represents a file.
+         * 
+         * @return the filename associated with this field
+         */
         public String getFilename() {
             return filename;
         }
 
-        /** Returns the field value */
+        /**
+         * Returns the value of the field.
+         * 
+         * @return the field value as a string
+         */
         @JsonProperty("itemValue")
         public String getValue() {
             return value;
         }
 
-        /** Returns the slug */
+        /**
+         * Returns the slug identifier of this field.
+         * 
+         * @return the field slug
+         */
         public String getSlug() {
             return slug;
         }
 
+        /**
+         * Sets the value of this field.
+         * 
+         * @param value the new value to assign
+         */
         void setValue(final String value) {
             this.value = value;
         }
@@ -87,67 +124,119 @@ public class Secret {
     // List of Field objects
     private List<Field> fields = new ArrayList<>();
 
-    /** Returns the secret name */
+    /**
+     * Returns the name of the secret.
+     * 
+     * @return the secret name
+     */
     public String getName() {
         return name;
     }
 
-    /** Returns the template name */
+    /**
+     * Returns the template name used for this secret.
+     * 
+     * @return the secret template name
+     */
     public String getSecretTemplateName() {
         return secretTemplateName;
     }
 
-    /** Returns last heartbeat status */
+    /**
+     * Returns the most recent heartbeat status.
+     * 
+     * @return the last heartbeat status string
+     */
     public String getLastHeartBeatStatus() {
         return lastHeartBeatStatus;
     }
 
-    /** Returns last heartbeat check date */
+    /**
+     * Returns the timestamp of the last heartbeat check.
+     * 
+     * @return a {@link Date} of the last heartbeat check
+     */
     public Date getLastHeartBeatCheck() {
         return new Date(lastHeartBeatCheck.getTime());
     }
 
-    /** Returns last password change attempt */
+    /**
+     * Returns the date of the last password change attempt.
+     * 
+     * @return a {@link Date} of the last password change attempt
+     */
     public Date getLastPasswordChangeAttempt() {
         return new Date(lastPasswordChangeAttempt.getTime());
     }
 
-    /** Returns secret ID */
+    /**
+     * Returns the unique ID of the secret.
+     * 
+     * @return the secret ID
+     */
     public int getId() {
         return id;
     }
 
-    /** Returns folder ID */
+    /**
+     * Returns the folder ID where this secret is stored.
+     * 
+     * @return the folder ID
+     */
     public int getFolderId() {
         return folderId;
     }
 
-    /** Returns template ID */
+    /**
+     * Returns the template ID associated with this secret.
+     * 
+     * @return the secret template ID
+     */
     public int getSecretTemplateId() {
         return secretTemplateId;
     }
 
-    /** Returns site ID */
+    /**
+     * Returns the site ID related to this secret.
+     * 
+     * @return the site ID
+     */
     public int getSiteId() {
         return siteId;
     }
-
-    /** Returns whether the secret is active */
+    
+    /**
+     * Returns whether this secret is currently active.
+     * 
+     * @return true if active; false otherwise
+     */
     public boolean isActive() {
         return active;
     }
 
-    /** Returns whether the secret is checked out */
+    /**
+     * Returns whether this secret is checked out.
+     * 
+     * @return true if checked out; false otherwise
+     */
     public boolean isCheckedOut() {
         return checkedOut;
     }
 
-    /** Returns whether checkout is enabled */
+    /**
+     * Returns whether the secret supports checkout.
+     * 
+     * @return true if checkout is enabled; false otherwise
+     */
     public boolean isCheckoutEnabled() {
         return checkoutEnabled;
     }
 
-    /** Returns an unmodifiable list of fields */
+    /**
+     * Returns an unmodifiable list of all field items for this secret.
+     * 
+     * @return an unmodifiable {@link List} of {@link Field} objects
+     */
     @JsonProperty("items")
     public List<Field> getFields() {
         return Collections.unmodifiableList(fields); // Return an unmodifiable view

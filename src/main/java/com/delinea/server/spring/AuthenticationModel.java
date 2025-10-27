@@ -1,4 +1,4 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.server.spring;
 
 import java.time.ZonedDateTime;
 
