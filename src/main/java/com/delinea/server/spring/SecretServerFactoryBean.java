@@ -1,4 +1,4 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.server.spring;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -10,6 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.http.HttpHost;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +29,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.InterceptingClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -31,6 +40,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import com.delinea.platform.service.AuthenticationService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -40,11 +50,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * <p>
  * The required properties are:
  * <ul>
- * <li>{@code secret_server.tenant} when accessing Secret Server Cloud <u>or</u>
- * <li>{@code secret_server.api_root_url} <u>and</u>
- * {@code secret_server.oauth2.token_url} for on-premises servers
- * <li>{@code secret_server.oauth2.username}
- * <li>{@code secret_server.oauth2.password}
+ * <li>{@code server.url} for Secret Server or Delinea Platform URL
+ * <li>{@code server.username}
+ * <li>{@code server.password}
  * </ul>
  *
  * <p>
@@ -101,6 +109,10 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 	private String secreterverUrl;
 	private String serverUsername;
 	private String serverPassword;
+    private String proxyHost;
+    private String proxyPort;
+    private String proxyUsername;
+    private String proxyPassword;
 
 	@Autowired(required = false)
 	private ClientHttpRequestFactory requestFactory;
@@ -122,26 +134,58 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 		} else {
 			authenticationMode = DEFAULT_AUTH_MODE;
 		}
-		String apiVersionProp = environment.getProperty("api_version");
+		String apiVersionProp = environment.getProperty("api.version");
 		this.API_VERSION = (apiVersionProp != null && !apiVersionProp.isEmpty()) ? apiVersionProp : "v1";
 		if (authenticationMode == DEFAULT_AUTH_MODE) {
-			this.serverUsername = environment.getProperty("server_username");
-			this.serverPassword = environment.getProperty("server_password");
+			this.serverUsername = environment.getProperty("server.username");
+			this.serverPassword = environment.getProperty("server.password");
 			Assert.state(StringUtils.hasText(serverUsername) && StringUtils.hasText(serverPassword),
 				"server.username and secret.password must be set when authenticationMode is 0");
-		} else {
-			this.ruleName = environment.getProperty("rule_name");
-			this.onboardingKey = environment.getProperty("onboarding_key");
+		} else if(authenticationMode == SDK_CLIENT_AUTH_MODE) {
+			this.ruleName = environment.getProperty("rule.name");
+			this.onboardingKey = environment.getProperty("onboarding.key");
 			Assert.state(StringUtils.hasText(ruleName) && StringUtils.hasText(onboardingKey),
-					"rule_name and onboarding_key must be set when authenticationMode is 1");
+					"rule.name and onboarding.key must be set when authenticationMode is 1");
 		}
-		this.serverUrl = environment.getProperty("server_url");
+		this.serverUrl = environment.getProperty("server.url");
 		Assert.state(StringUtils.hasText(serverUrl),
-				"server_url must be set.");
+				"server.url must be set.");
+		
+		this.proxyHost = environment.getProperty("proxy.host");
+		this.proxyPort = environment.getProperty("proxy.port");
+		this.proxyUsername = environment.getProperty("proxy.username");
+		this.proxyPassword = environment.getProperty("proxy.password");
 
 		if (requestFactory == null)
-			requestFactory = new SimpleClientHttpRequestFactory();
+			requestFactory = createRequestFactoryWithProxy();
 	}
+	
+	 private ClientHttpRequestFactory createRequestFactoryWithProxy() {
+	        if (!StringUtils.hasText(proxyHost) ||  Integer.parseInt(proxyPort) <= 0) {
+	            return new SimpleClientHttpRequestFactory();
+	        }
+	        HttpHost proxy = new HttpHost(proxyHost, Integer.parseInt(proxyPort));
+
+	        BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+	        if (StringUtils.hasText(proxyUsername)) {
+	            credsProvider.setCredentials(
+	                new AuthScope(proxyHost, Integer.parseInt(proxyPort)),
+	                new UsernamePasswordCredentials(proxyUsername, proxyPassword.toCharArray())
+	            );
+	        }
+
+	        RequestConfig config = RequestConfig.custom()
+	            .setProxy(proxy)
+	            .build();
+
+	        CloseableHttpClient httpClient = HttpClients.custom()
+	            .setDefaultCredentialsProvider(credsProvider)
+	            .setDefaultRequestConfig(config)
+	            .setConnectionManager(new PoolingHttpClientConnectionManager())
+	            .build();
+
+	        return new HttpComponentsClientHttpRequestFactory(httpClient);
+	    }
 
 	private AccessGrant getAccessGrant() throws UnknownHostException, UnsupportedEncodingException,Exception {
 		if (authenticationMode == DEFAULT_AUTH_MODE) {

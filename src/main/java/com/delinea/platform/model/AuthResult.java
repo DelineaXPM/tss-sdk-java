@@ -1,4 +1,4 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.platform.model;
 
 /** Represents the result of an authentication attempt. */
 public class AuthResult {

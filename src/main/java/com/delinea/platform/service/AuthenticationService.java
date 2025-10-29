@@ -1,4 +1,4 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.platform.service;
 
 import java.io.IOException;
 
@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.delinea.platform.model.ServerResponseModel;
+import com.delinea.server.spring.AuthenticationModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -74,6 +76,4 @@ public class AuthenticationService implements IAuthenticationService {
             throw new IOException(ex.getMessage(), ex);
         }
     }
-
-
 }
