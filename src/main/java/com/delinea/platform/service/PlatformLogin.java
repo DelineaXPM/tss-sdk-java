@@ -23,7 +23,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /** Handles authentication against Delinea Platform and vault retrieval. */
 @Component
 public class PlatformLogin {
-    private RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate;
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     /**
      * Authenticates the user on the Delinea Platform and retrieves vault info.

@@ -18,8 +18,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Service
 public class AuthenticationService implements IAuthenticationService {
-	private RestTemplate restTemplate = new RestTemplate();
+	private RestTemplate restTemplate ;
 	private PlatformLogin platformLogin = new PlatformLogin();
+	
+	 public void setRestTemplate(RestTemplate restTemplate) {
+	        this.restTemplate = restTemplate;
+	        this.platformLogin.setRestTemplate(restTemplate);
+	    }
 
 	 /**
      * Determines whether to authenticate against Secret Server or Platform
@@ -42,9 +47,7 @@ public class AuthenticationService implements IAuthenticationService {
                 if (isPlatformHealthy) {
                     authModel.setPlatformLogin(true);
                     return platformLogin.platformAuthentication(authModel);
-                } else {
-                    return null;
-                }
+                } 
             }
             return authModel;
         } catch (IOException e) {
