@@ -11,6 +11,8 @@ import com.delinea.platform.model.ServerResponseModel;
 import com.delinea.server.spring.AuthenticationModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Handles authentication logic for both Secret Server and Platform.
  * <p>
@@ -21,6 +23,15 @@ public class AuthenticationService implements IAuthenticationService {
 	private RestTemplate restTemplate ;
 	private PlatformLogin platformLogin = new PlatformLogin();
 	
+	 /**
+     * Sets the RestTemplate to be used for HTTP calls.
+     * The RestTemplate is injected and managed by Spring,
+     * so no defensive copy is required.
+     */
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP2",
+        justification = "RestTemplate is a Spring-managed immutable bean and safe to assign directly."
+    )
 	 public void setRestTemplate(RestTemplate restTemplate) {
 	        this.restTemplate = restTemplate;
 	        this.platformLogin.setRestTemplate(restTemplate);
