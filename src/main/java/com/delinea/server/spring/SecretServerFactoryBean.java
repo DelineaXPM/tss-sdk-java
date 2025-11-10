@@ -212,20 +212,17 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
         }
     }
 
-    private AuthenticationModel isPlatfromOrSS() throws Exception {
-        // authenticationService now has RestTemplate injected in afterPropertiesSet
-        AuthenticationModel authenticationModel = authenticationService
-                .authenticateAsync(new AuthenticationModel(serverUsername, serverPassword, serverUrl));
-        if (authenticationModel != null) {
-            if (authenticationModel.isPlatformLogin()) {
-                return authenticationModel;
-            } else {
-                this.secreterverUrl = serverUrl;
-                return authenticationModel;
-            }
-        }
-        return null;
-    }
+	private AuthenticationModel isPlatfromOrSS() throws Exception {
+		// authenticationService now has RestTemplate injected in afterPropertiesSet
+		AuthenticationModel authenticationModel = authenticationService
+				.authenticateAsync(new AuthenticationModel(serverUsername, serverPassword, serverUrl));
+		if (authenticationModel.isPlatformLogin()) {
+			return authenticationModel;
+		} else {
+			this.secreterverUrl = serverUrl;
+			return authenticationModel;
+		}
+	}
 
     private AccessGrant getTokenUsingSScred() {
         final MultiValueMap<String, String> request = new LinkedMultiValueMap<String, String>();
