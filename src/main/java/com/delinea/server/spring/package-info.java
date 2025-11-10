@@ -10,4 +10,4 @@
  * @author Adam Migus
  * @see SecretServerFactoryBean
  */
-package com.delinea.secrets.server.spring;
+package com.delinea.server.spring;

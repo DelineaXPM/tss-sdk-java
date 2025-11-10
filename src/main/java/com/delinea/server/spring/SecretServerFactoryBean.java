@@ -189,13 +189,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
                 .setDefaultCredentialsProvider(credsProvider)
                 .setDefaultRequestConfig(config)
                 .setConnectionManager(new PoolingHttpClientConnectionManager())
-                .addRequestInterceptorLast((request, entity, context) -> {
-                    try {
-//                        System.out.println("[DEBUG] Outgoing request through proxy → " + request.getRequestUri());
-                    } catch (Exception e) {
-//                        System.out.println("[DEBUG] Outgoing request through proxy (URI unavailable).");
-                    }
-                })
+                .addRequestInterceptorLast((request, entity, context) -> {})
                 .build();
         return new HttpComponentsClientHttpRequestFactory(httpClient);
     }
@@ -203,7 +197,6 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
     private AccessGrant getAccessGrant() throws UnknownHostException, UnsupportedEncodingException, Exception {
         if (authenticationMode == DEFAULT_AUTH_MODE) {
             AuthenticationModel authenticationModel = isPlatfromOrSS();
-            if (authenticationModel != null) {
                 if (authenticationModel.isPlatformLogin()) {
                     AccessGrant accessGrant = new AccessGrant();
                     accessGrant.accessToken = authenticationModel.getToken();
@@ -212,9 +205,6 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
                 } else {
                     return getTokenUsingSScred();
                 }
-            } else {
-                throw new NullPointerException("Invalid Server URL ");
-            }
         } else {
             this.secreterverUrl = serverUrl;
             setSDKClientCred();

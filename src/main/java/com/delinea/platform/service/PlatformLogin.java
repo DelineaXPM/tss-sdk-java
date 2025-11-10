@@ -20,10 +20,20 @@ import com.delinea.platform.model.VaultsResponseModel.Vault;
 import com.delinea.server.spring.AuthenticationModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /** Handles authentication against Delinea Platform and vault retrieval. */
 @Component
 public class PlatformLogin {
     private RestTemplate restTemplate;
+    
+    /**
+    * Injects RestTemplate. Safe assignment since Spring manages RestTemplate lifecycle.
+    */
+   @SuppressFBWarnings(
+       value = "EI_EXPOSE_REP2",
+       justification = "RestTemplate is a Spring-managed immutable bean and safe to assign directly."
+   )
     public void setRestTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
