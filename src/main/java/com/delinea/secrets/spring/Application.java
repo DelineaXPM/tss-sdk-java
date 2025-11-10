@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.delinea.secrets.server.spring.SecretServer;
+import com.delinea.server.spring.SecretServer;
 
 /**
  * Main entry point for the Delinea Secrets SDK Spring Boot application.
@@ -20,7 +20,11 @@ import com.delinea.secrets.server.spring.SecretServer;
  * bean to fetch a secret using the configured secret ID.
  */
 @SpringBootApplication
-@ComponentScan("com.delinea.secrets.server.spring")
+@ComponentScan({
+    "com.delinea.platform.model",
+    "com.delinea.platform.service",
+    "com.delinea.server.spring"
+})
 public class Application {
     private final Logger log = LoggerFactory.getLogger(Application.class);
 

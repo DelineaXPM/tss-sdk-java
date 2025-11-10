@@ -1,4 +1,6 @@
-package com.delinea.secrets.server.spring;
+package com.delinea.platform.service;
+
+import com.delinea.server.spring.AuthenticationModel;
 
 /**
  * Defines the contract for authentication services used by the SDK.
