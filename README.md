@@ -18,7 +18,7 @@ You can use this SDK in your application by adding the following dependency:
 <dependency>
   <groupId>com.delinea.secrets</groupId>
   <artifactId>tss-sdk-java</artifactId>
-  <version>2.1.0</version>
+  <version>2.1.1</version>
 </dependency>
 ```
 
@@ -49,7 +49,7 @@ Set authentication_mode to 0 for fetch secret using Secret Server credentials, S
 ```ini
 authentication_mode =0
 server_url =Secret_Server_url
-api_version=v1
+autoComment =AutoComment is feature that adds a comment when a secret is accessed in Delinea Secret Server, which is recorded in the secrets Audit log for tracking
 
 server.username =application_user
 server.password =application_user_password 
@@ -69,7 +69,7 @@ Set authentication_mode to 1 for fetch secret using SDK client, Set the followin
 ```ini
 authentication_mode =1
 server_url =Secret_Server_url
-api_version=v1
+autoComment =AutoComment is feature that adds a comment when a secret is accessed in Delinea Secret Server, which is recorded in the secrets Audit log for tracking
 
 rule_name =create_rule_name
 onboarding_key =onboarding_key
@@ -85,7 +85,7 @@ Set authentication_mode to 0 for fetch secret using Delinea Platform credentials
 ```ini
 authentication_mode =0
 server_url =Delinea_Platform_url
-api_version=v1
+autoComment =AutoComment is feature that adds a comment when a secret is accessed in Delinea Secret Server, which is recorded in the secrets Audit log for tracking
 
 server.username =service_user
 server.password =service_user_password
@@ -105,8 +105,8 @@ Set the following properties in application.properties:
 
 ```ini
 authentication_mode =1
-server_url =Secret_Server_url
-api_version=v1
+server_url =Delinea_Platform_url
+autoComment =AutoComment is feature that adds a comment when a secret is accessed in Delinea Secret Server, which is recorded in the secrets Audit log for tracking
 
 rule_name =create_rule_name
 onboarding_key =onboarding_key
