@@ -81,9 +81,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String AUTHORIZATION_TOKEN_TYPE = "Bearer";
 
-    private String API_VERSION;
     private String ruleName;
-
     private String onboardingKey;
     private int authenticationMode;
     private String clientId;
@@ -96,6 +94,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
     private String proxyPort;
     private String proxyUsername;
     private String proxyPassword;
+    private String autoComment;
 
     @Autowired(required = false)
     private ClientHttpRequestFactory requestFactory;
@@ -120,8 +119,6 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
         } else {
             authenticationMode = DEFAULT_AUTH_MODE;
         }
-        String apiVersionProp = environment.getProperty("api.version");
-        this.API_VERSION = (apiVersionProp != null && !apiVersionProp.isEmpty()) ? apiVersionProp : "v1";
 
         if (authenticationMode == DEFAULT_AUTH_MODE) {
             this.serverUsername = environment.getProperty("server.username");
@@ -142,6 +139,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
         this.proxyPort = environment.getProperty("proxy.port");
         this.proxyUsername = environment.getProperty("proxy.username");
         this.proxyPassword = environment.getProperty("proxy.password");
+        this.autoComment = environment.getProperty("autoComment", "");
 
         if (requestFactory == null) {
             requestFactory = createRequestFactoryWithProxy();
@@ -175,7 +173,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
         HttpHost proxy = new HttpHost(proxyHost, port);
 
         BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-        if (StringUtils.hasText(proxyUsername)) {
+        if (StringUtils.hasText(proxyUsername) && proxyPassword != null) {
             credsProvider.setCredentials(
                     new AuthScope(proxyHost, port),
                     new UsernamePasswordCredentials(proxyUsername, proxyPassword.toCharArray()));
@@ -274,8 +272,7 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
 
         // Use requestFactory-backed RestTemplate so proxy is used
         RestTemplate rt = new RestTemplate(requestFactory);
-        ResponseEntity<Map<String, Object>> response = rt.exchange(serverUrl + "/api/" + API_VERSION
-                + "/sdk-client-accounts", HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        ResponseEntity<Map<String, Object>> response = rt.exchange(serverUrl + "/api/v1/sdk-client-accounts", HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
         });
 
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -291,7 +288,8 @@ public class SecretServerFactoryBean implements FactoryBean<SecretServer>, Initi
     public SecretServer getObject() throws Exception {
         AccessGrant accessGrant = getAccessGrant();
         final SecretServer secretServer = new SecretServer();
-        secretServer.setUriTemplateHandler(new DefaultUriBuilderFactory(secreterverUrl + "/api/" + API_VERSION));
+        secretServer.setAutoComment(autoComment); 
+        secretServer.setUriTemplateHandler(new DefaultUriBuilderFactory(secreterverUrl + "/api/v1"));
 
         secretServer.setRequestFactory(new InterceptingClientHttpRequestFactory(requestFactory,
                 Arrays.asList((request, body, execution) -> {
