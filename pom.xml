@@ -62,7 +62,7 @@
 		<!-- Boot BOM properties: keep httpcore5-h2 on the same line as the explicit httpcore5 below -->
 		<httpclient5.version>5.6.4</httpclient5.version>
 		<httpcore5.version>5.4.4</httpcore5.version>
-		<logback.version>1.5.38</logback.version>
+		<logback.version>1.6.5</logback.version>
 		<pmd.version>7.22.0</pmd.version>
 	</properties>
 
