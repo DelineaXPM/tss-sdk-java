@@ -53,6 +53,14 @@ public class VaultsResponseModel {
         private boolean isGlobalDefault;
         @JsonProperty("isActive")
         private boolean isActive;
+        @JsonProperty("externalTenantId")
+        private String externalTenantId;
+        @JsonProperty("applicationDefinitionId")
+        private String applicationDefinitionId;
+        @JsonProperty("createdBy")
+        private String createdBy;
+        @JsonProperty("updatedBy")
+        private String updatedBy;
 
         @JsonProperty("connection")
         private Connection connection;
